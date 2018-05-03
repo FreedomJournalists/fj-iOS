@@ -1,0 +1,6 @@
+framework module Pods_fj_iOS {
+  umbrella header "Pods-fj-iOS-umbrella.h"
+
+  export *
+  module * { export * }
+}
