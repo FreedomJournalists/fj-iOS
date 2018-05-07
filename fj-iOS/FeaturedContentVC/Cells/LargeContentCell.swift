@@ -7,16 +7,23 @@
 //
 
 import UIKit
+import SnapKit
 
 class LargeContentCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
+    private var subViewWidth: CGFloat!
     
     private let largeCampaignCollectionViewCellId = "largeCampaignCollectionViewCellId"
     
     let largeCampaignsCollectionView: UICollectionView = {
-        let layout = UICollectionViewLayout()
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 10
+        layout.sectionInset = UIEdgeInsetsMake(0, 20, 0, 20)
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
-        collectionView.backgroundColor = UIColor.blue
+        collectionView.backgroundColor = UIColor.red
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
@@ -24,24 +31,40 @@ class LargeContentCell: UICollectionViewCell, UICollectionViewDataSource, UIColl
         
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews()
+//        setupViews()
+    }
+
+    private func indexOfMajorCell() -> Int {
+        let itemWidth = subViewWidth
+        let proportionalOffset = largeCampaignsCollectionView.collectionViewLayout.collectionView!.contentOffset.x / itemWidth!
+        return Int(round(proportionalOffset))
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        subViewWidth = self.frame.width * 0.9
+        setupViews()
+    }
+    
     func setupViews() {
-        backgroundColor = UIColor.red
         
-        addSubview(largeCampaignsCollectionView)
         
         largeCampaignsCollectionView.dataSource = self
         largeCampaignsCollectionView.delegate = self
-        
+        addSubview(largeCampaignsCollectionView)
         largeCampaignsCollectionView.register(LargeCampaignCollectionViewCell.self, forCellWithReuseIdentifier: largeCampaignCollectionViewCellId)
         
-        largeCampaignsCollectionView.frame.size = CGSize(width: self.frame.width, height: self.frame.height)
+        largeCampaignsCollectionView.snp.makeConstraints { (make) in
+            make.bottom.equalToSuperview()
+            make.top.equalToSuperview()
+            make.right.equalToSuperview()
+            make.left.equalToSuperview()
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -49,13 +72,21 @@ class LargeContentCell: UICollectionViewCell, UICollectionViewDataSource, UIColl
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print("!@#$")
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCampaignCollectionViewCellId, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCampaignCollectionViewCellId, for: indexPath) as! LargeCampaignCollectionViewCell
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 150, height: self.frame.height)
+        return CGSize(width: subViewWidth, height: self.frame.height)
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        targetContentOffset.pointee = scrollView.contentOffset
+        
+        let indexOfMajorCell = self.indexOfMajorCell()
+        
+        let indexPath = IndexPath(row: indexOfMajorCell, section: 0)
+        largeCampaignsCollectionView.collectionViewLayout.collectionView!.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
 }
 
@@ -71,6 +102,22 @@ class LargeCampaignCollectionViewCell: UICollectionViewCell {
     }
     
     func setupViews() {
+        print("Hello")
         backgroundColor = UIColor.green
+        
+        let imageView = UIImageView()
+        imageView.backgroundColor = UIColor.black
+        imageView.layer.cornerRadius = 4
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        
+        addSubview(imageView)
+        
+        imageView.snp.makeConstraints { (make) in
+            make.top.equalToSuperview()
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.height.equalTo(self.frame.height * 0.7)
+        }
     }
 }

@@ -13,9 +13,12 @@ class FeaturedContentViewController: UICollectionViewController, UICollectionVie
     private let smallContentCellId = "smallContentCellId"
     private let largeContentCellId = "largeContentCellId"
     
+    private var cellHeight: CGFloat!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
+        self.cellHeight = (self.view.frame.height - 30) / 2
         setUpCollectionView()
     }
     
@@ -32,12 +35,12 @@ class FeaturedContentViewController: UICollectionViewController, UICollectionVie
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeContentCellId, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeContentCellId, for: indexPath) as! LargeContentCell
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize.init(width: view.frame.width, height: 150)
+        return CGSize.init(width: view.frame.width, height: cellHeight)
     }
 
 }

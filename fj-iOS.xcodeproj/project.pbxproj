@@ -91,8 +91,8 @@
 		48E0B649209541D300765FB5 /* FeaturedContentVC */ = {
 			isa = PBXGroup;
 			children = (
-				487D99FD209AB4E30016E6A7 /* Cells */,
 				488F31C5209AB13D002ECA31 /* Views */,
+				487D99FD209AB4E30016E6A7 /* Cells */,
 				48E0B63720953D5800765FB5 /* FeaturedContentViewController.swift */,
 			);
 			path = FeaturedContentVC;

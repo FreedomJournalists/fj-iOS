@@ -39,7 +39,6 @@ class View: UIView {
             make.width.equalTo(40)
             make.height.equalTo(40)
             make.left.equalTo(view.snp.right).offset(10)
-//            make.edges.equalToSuperview()
         }
     }
     
